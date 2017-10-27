@@ -9,7 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import io.vov.vitamio.LibsChecker;
+//import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.Vitamio;
 import io.vov.vitamio.widget.MediaController;
@@ -28,7 +28,11 @@ public class VitamioPlayerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!LibsChecker.checkVitamioLibs(this)) {
+//        if (!LibsChecker.checkVitamioLibs(this)) {
+//            return;
+//        }
+        if (!Vitamio.isInitialized(this)){
+            System.out.println("Vitamio isn't initialized........");
             return;
         }
 
@@ -37,7 +41,6 @@ public class VitamioPlayerActivity extends Activity {
         button = (Button) findViewById(R.id.button1);
         editText = (EditText) findViewById(R.id.edittext1);
         videoView = (VideoView) findViewById(R.id.videoView);
-//        videoView.setBufferSize(1024 * 1024);
         videoView.setHardwareDecoder(true);
         videoView.setVideoQuality(MediaPlayer.VIDEOQUALITY_HIGH);
 
@@ -54,6 +57,12 @@ public class VitamioPlayerActivity extends Activity {
                     videoView.setMediaController(mediaController);
                     videoView.requestFocus();
 
+                    videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                        @Override
+                        public boolean onError(MediaPlayer mp, int what, int extra) {
+                            return true;
+                        }
+                    });
                     videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                         @Override
                         public void onPrepared(MediaPlayer mediaPlayer) {
